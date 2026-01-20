@@ -9,15 +9,15 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/DevaPrasanth44/Chat_App'
+                // Make sure this matches your GitHub branch name (master/main)
+                git branch: 'master', url: 'https://github.com/DevaPrasanth44/Chat_App'
             }
         }
 
         stage('Install Client Dependencies') {
             steps {
                 dir('client') {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -25,7 +25,7 @@ pipeline {
         stage('Build React App') {
             steps {
                 dir('client') {
-                    sh 'npm run build'
+                    bat 'npm run build'
                 }
             }
         }
@@ -33,14 +33,14 @@ pipeline {
         stage('Install Server Dependencies') {
             steps {
                 dir('server') {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
 
         stage('Backend Ready') {
             steps {
-                echo 'Backend installed successfully'
+                echo '✅ Backend installed successfully'
             }
         }
     }
