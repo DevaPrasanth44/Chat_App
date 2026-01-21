@@ -4,11 +4,13 @@
   "description": "Real-time chat backend",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "jest"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "mongoose": "^9.1.5",
     "socket.io": "^4.7.2"
   }
 }

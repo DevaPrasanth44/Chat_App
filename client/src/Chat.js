@@ -11,17 +11,13 @@ function Chat() {
   const sendMessage = () => {
     if (!message.trim()) return;
 
-    socket.emit("send_message", {
-      text: message,
-      time: new Date().toLocaleTimeString()
-    });
-
+    socket.emit("send_message", { text: message });
     setMessage("");
   };
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessages((prev) => [...prev, data]);
+    socket.on("receive_message", (msg) => {
+      setMessages((prev) => [...prev, msg]);
     });
 
     return () => socket.off("receive_message");
@@ -29,28 +25,21 @@ function Chat() {
 
   return (
     <div className="chat-container">
-      <div className="chat-header">Chat Room</div>
+      <h2>💬 Chat App</h2>
 
-      <div className="chat-body">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`chat-message ${
-              msg.own ? "own-message" : "other-message"
-            }`}
-          >
-            <span>{msg.text}</span>
-            <small>{msg.time}</small>
+      <div className="messages">
+        {messages.map((m, i) => (
+          <div key={i} className="message">
+            {m.text}
           </div>
         ))}
       </div>
 
-      <div className="chat-footer">
+      <div className="input-box">
         <input
-          type="text"
-          placeholder="Type a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type message..."
         />
         <button onClick={sendMessage}>Send</button>
       </div>

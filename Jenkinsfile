@@ -2,35 +2,41 @@ pipeline {
     agent any
 
     environment {
-        NODE_ENV = 'production'
+        NODE_ENV = 'test'
     }
 
     stages {
 
         stage('Checkout Code') {
             steps {
-                // Make sure this matches your GitHub branch name (master/main)
-                git branch: 'master', url: 'https://github.com/DevaPrasanth44/Chat_App'
+                git branch: 'master',
+                    url: 'https://github.com/DevaPrasanth44/Chat_App'
             }
         }
 
-        stage('Install Client Dependencies') {
+        /* ================= FRONTEND ================= */
+
+        stage('Build Frontend (React)') {
             steps {
                 dir('client') {
                     bat 'npm install'
-                }
-            }
-        }
-
-        stage('Build React App') {
-            steps {
-                dir('client') {
                     bat 'npm run build'
                 }
             }
         }
 
-        stage('Install Server Dependencies') {
+        stage('Test Frontend') {
+            steps {
+                dir('client') {
+                    // React tests (Jest)
+                    bat 'npm test -- --watchAll=false'
+                }
+            }
+        }
+
+        /* ================= BACKEND ================= */
+
+        stage('Build Backend (Node)') {
             steps {
                 dir('server') {
                     bat 'npm install'
@@ -38,19 +44,22 @@ pipeline {
             }
         }
 
-        stage('Backend Ready') {
+        stage('Test Backend') {
             steps {
-                echo '✅ Backend installed successfully'
+                dir('server') {
+                    // Works if you have jest/mocha configured
+                    bat 'npm test'
+                }
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build & setup successful'
+            echo '✅ Build & Tests completed successfully'
         }
         failure {
-            echo '❌ Build failed'
+            echo '❌ Build or Tests failed'
         }
     }
 }
