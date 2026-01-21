@@ -2,11 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node18' // NodeJS 18 installed in Jenkins Global Tool Config
-    }
-
-    environment {
-        CI = 'true'
+        nodejs 'node18'
     }
 
     stages {
@@ -36,15 +32,6 @@ pipeline {
             }
         }
 
-        stage('Backend Health Check') {
-            steps {
-                dir('server') {
-                    echo 'Checking Node version...'
-                    bat 'node -v'
-                }
-            }
-        }
-
         stage('Run Frontend Tests') {
             steps {
                 dir('client') {
@@ -57,27 +44,19 @@ pipeline {
         stage('Build React App') {
             steps {
                 dir('client') {
-                    echo 'Building React app...'
+                    echo 'Building React application...'
                     bat 'npm run build'
                 }
             }
-        stage('Run Frontend Tests') {
-    steps {
-        dir('client') {
-            echo 'Running frontend tests...'
-            bat 'npm test -- --watchAll=false'
-        }
-    }
-}
         }
     }
 
     post {
         success {
-            echo '✅ Build and Test completed successfully!'
+            echo '✅ Build and Tests completed successfully!'
         }
         failure {
-            echo '❌ Build or Test failed!'
+            echo '❌ Build or Tests failed!'
         }
     }
 }
