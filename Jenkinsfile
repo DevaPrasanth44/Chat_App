@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node18' // Make sure NodeJS 18 is installed in Jenkins Global Tool Configuration
+        nodejs 'node18' // NodeJS 18 installed in Jenkins Global Tool Config
     }
 
     environment {
@@ -13,7 +13,6 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                // Explicitly checkout master branch
                 git branch: 'master',
                     url: 'https://github.com/DevaPrasanth44/Chat_App'
             }
@@ -23,7 +22,7 @@ pipeline {
             steps {
                 dir('server') {
                     echo 'Installing backend dependencies...'
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -32,7 +31,7 @@ pipeline {
             steps {
                 dir('client') {
                     echo 'Installing frontend dependencies...'
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         }
@@ -41,7 +40,7 @@ pipeline {
             steps {
                 dir('server') {
                     echo 'Checking Node version...'
-                    sh 'node -v'
+                    bat 'node -v'
                 }
             }
         }
@@ -50,7 +49,7 @@ pipeline {
             steps {
                 dir('client') {
                     echo 'Running frontend tests...'
-                    sh 'npm test -- --watchAll=false'
+                    bat 'npm test -- --watchAll=false'
                 }
             }
         }
@@ -59,7 +58,7 @@ pipeline {
             steps {
                 dir('client') {
                     echo 'Building React app...'
-                    sh 'npm run build'
+                    bat 'npm run build'
                 }
             }
         }
