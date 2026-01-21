@@ -2,16 +2,11 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node18' // NodeJS installation configured in Jenkins
+        nodejs 'node18' // Make sure NodeJS 18 is installed in Jenkins Global Tool Config
     }
 
     environment {
         CI = 'true'
-    }
-
-    options {
-        timestamps()
-        ansiColor('xterm')
     }
 
     stages {
@@ -23,59 +18,58 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            parallel {
-                stage('Install Backend Dependencies') {
-                    steps {
-                        dir('server') {
-                            bat 'npm install'
-                        }
-                    }
-                }
-                stage('Install Frontend Dependencies') {
-                    steps {
-                        dir('client') {
-                            bat 'npm install'
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Backend Tests') {
+        stage('Install Backend Dependencies') {
             steps {
                 dir('server') {
-                    bat 'npm test'
+                    echo 'Installing backend dependencies...'
+                    sh 'npm install'
                 }
             }
         }
 
-        stage('Frontend Tests') {
+        stage('Install Frontend Dependencies') {
             steps {
                 dir('client') {
-                    bat 'npm test -- --watchAll=false'
+                    echo 'Installing frontend dependencies...'
+                    sh 'npm install'
                 }
             }
         }
 
-        stage('Build Frontend') {
+        stage('Backend Health Check') {
+            steps {
+                dir('server') {
+                    echo 'Checking Node version...'
+                    sh 'node -v'
+                }
+            }
+        }
+
+        stage('Run Frontend Tests') {
             steps {
                 dir('client') {
-                    bat 'npm run build'
+                    echo 'Running frontend tests...'
+                    sh 'npm test -- --watchAll=false'
+                }
+            }
+        }
+
+        stage('Build React App') {
+            steps {
+                dir('client') {
+                    echo 'Building React app...'
+                    sh 'npm run build'
                 }
             }
         }
     }
 
     post {
-        always {
-            echo '📌 Pipeline finished'
-        }
         success {
-            echo '✅ Build & Tests completed successfully'
+            echo '✅ Build and Test completed successfully!'
         }
         failure {
-            echo '❌ Build or Tests failed'
+            echo '❌ Build or Test failed!'
         }
     }
 }
