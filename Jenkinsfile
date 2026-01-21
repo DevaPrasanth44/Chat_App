@@ -61,6 +61,14 @@ pipeline {
                     bat 'npm run build'
                 }
             }
+        stage('Run Frontend Tests') {
+    steps {
+        dir('client') {
+            echo 'Running frontend tests...'
+            bat 'npm test -- --watchAll=false'
+        }
+    }
+}
         }
     }
 
