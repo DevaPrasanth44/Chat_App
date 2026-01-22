@@ -1,14 +1,7 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb://127.0.0.1:27017/chatapp", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect("mongodb://127.0.0.1:27017/chatapp");
 
-const db = mongoose.connection;
-
-db.once("open", () => {
+mongoose.connection.once("open", () => {
   console.log("✅ MongoDB Connected");
 });
-
-module.exports = mongoose;

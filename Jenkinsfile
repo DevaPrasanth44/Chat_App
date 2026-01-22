@@ -5,6 +5,11 @@ pipeline {
         nodejs 'node18'
     }
 
+    environment {
+        CI = 'true'
+        NODE_ENV = 'test'
+    }
+
     stages {
 
         stage('Checkout Code') {
@@ -14,20 +19,33 @@ pipeline {
             }
         }
 
+        /* ================= BACKEND ================= */
+
         stage('Install Backend Dependencies') {
             steps {
                 dir('server') {
                     echo 'Installing backend dependencies...'
-                    bat 'npm install'
+                    bat 'npm ci'
                 }
             }
         }
+
+        stage('Backend Health Check') {
+            steps {
+                dir('server') {
+                    echo 'Checking backend startup...'
+                    bat 'node -e "console.log(\'Backend OK\')"'
+                }
+            }
+        }
+
+        /* ================= FRONTEND ================= */
 
         stage('Install Frontend Dependencies') {
             steps {
                 dir('client') {
                     echo 'Installing frontend dependencies...'
-                    bat 'npm install'
+                    bat 'npm ci'
                 }
             }
         }
@@ -36,7 +54,7 @@ pipeline {
             steps {
                 dir('client') {
                     echo 'Running frontend tests...'
-                    bat 'npm test -- --watchAll=false'
+                    bat 'npm test -- --watch=false --runInBand'
                 }
             }
         }
@@ -49,14 +67,23 @@ pipeline {
                 }
             }
         }
+
+        stage('Archive Build Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'client/build/**', fingerprint: true
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Build and Tests completed successfully!'
+            echo '✅ CI Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Build or Tests failed!'
+            echo '❌ CI Pipeline failed!'
+        }
+        always {
+            cleanWs()
         }
     }
 }

@@ -31,7 +31,6 @@
   padding: 10px;
   border-radius: 10px;
   font-size: 14px;
-  position: relative;
 }
 
 .own-message {
@@ -41,7 +40,7 @@
 }
 
 .other-message {
-  background: white;
+  background: #ffffff;
   margin-right: auto;
   border-bottom-left-radius: 0;
 }
@@ -50,7 +49,7 @@
   display: block;
   font-size: 10px;
   color: gray;
-  margin-top: 5px;
+  margin-top: 4px;
   text-align: right;
 }
 
@@ -77,8 +76,4 @@
   background: #25d366;
   color: white;
   cursor: pointer;
-}
-
-.chat-footer button:hover {
-  background: #1ebc59;
 }
