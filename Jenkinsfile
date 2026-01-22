@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node18'
+        nodejs 'node18' // Make sure NodeJS tool is configured in Jenkins
     }
 
     environment {
@@ -22,6 +22,7 @@ pipeline {
         stage('Install Backend Dependencies') {
             steps {
                 dir('server') {
+                    echo '📦 Installing backend dependencies...'
                     bat 'npm ci'
                 }
             }
@@ -30,6 +31,7 @@ pipeline {
         stage('Install Frontend Dependencies') {
             steps {
                 dir('client') {
+                    echo '📦 Installing frontend dependencies...'
                     bat 'npm ci'
                 }
             }
@@ -38,7 +40,18 @@ pipeline {
         stage('Run Frontend Tests') {
             steps {
                 dir('client') {
-                    bat 'npm test -- --watch=false --runInBand'
+                    echo '🧪 Running frontend tests...'
+                    // Run Jest tests
+                    bat 'npm test -- --watchAll=false --runInBand --passWithNoTests'
+                }
+            }
+        }
+
+        stage('Run Backend Tests') {
+            steps {
+                dir('server') {
+                    echo '🧪 Running backend tests...'
+                    bat 'npm test -- --watchAll=false --runInBand --passWithNoTests'
                 }
             }
         }
@@ -46,6 +59,7 @@ pipeline {
         stage('Build React App') {
             steps {
                 dir('client') {
+                    echo '🚀 Building React app...'
                     bat 'npm run build'
                 }
             }
@@ -53,6 +67,7 @@ pipeline {
 
         stage('Archive Build Artifacts') {
             steps {
+                echo '📦 Archiving build artifacts...'
                 archiveArtifacts artifacts: 'client/build/**', fingerprint: true
             }
         }
