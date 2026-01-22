@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'node18'
+        nodejs 'node18' // Make sure NodeJS tool is configured in Jenkins
     }
 
     environment {
@@ -41,6 +41,7 @@ pipeline {
             steps {
                 dir('client') {
                     echo '🧪 Running frontend tests...'
+                    // Run Jest tests
                     bat 'npm test -- --watchAll=false --runInBand --passWithNoTests'
                 }
             }
@@ -49,8 +50,8 @@ pipeline {
         stage('Run Backend Tests') {
             steps {
                 dir('server') {
-                    echo '🧪 Running backend tests (if present)...'
-                    bat 'npm test -- --passWithNoTests || echo "No backend tests found"'
+                    echo '🧪 Running backend tests...'
+                    bat 'npm test -- --watchAll=false --runInBand --passWithNoTests'
                 }
             }
         }
