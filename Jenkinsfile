@@ -19,32 +19,17 @@ pipeline {
             }
         }
 
-        /* ================= BACKEND ================= */
-
         stage('Install Backend Dependencies') {
             steps {
                 dir('server') {
-                    echo 'Installing backend dependencies...'
                     bat 'npm ci'
                 }
             }
         }
 
-        stage('Backend Health Check') {
-            steps {
-                dir('server') {
-                    echo 'Checking backend startup...'
-                    bat 'node -e "console.log(\'Backend OK\')"'
-                }
-            }
-        }
-
-        /* ================= FRONTEND ================= */
-
         stage('Install Frontend Dependencies') {
             steps {
                 dir('client') {
-                    echo 'Installing frontend dependencies...'
                     bat 'npm ci'
                 }
             }
@@ -53,7 +38,6 @@ pipeline {
         stage('Run Frontend Tests') {
             steps {
                 dir('client') {
-                    echo 'Running frontend tests...'
                     bat 'npm test -- --watch=false --runInBand'
                 }
             }
@@ -62,7 +46,6 @@ pipeline {
         stage('Build React App') {
             steps {
                 dir('client') {
-                    echo 'Building React application...'
                     bat 'npm run build'
                 }
             }
@@ -77,10 +60,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ CI Pipeline completed successfully!'
+            echo '✅ Tests & Build Successful'
         }
         failure {
-            echo '❌ CI Pipeline failed!'
+            echo '❌ Pipeline Failed'
         }
         always {
             cleanWs()
