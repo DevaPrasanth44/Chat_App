@@ -1,61 +1,50 @@
-import { useEffect, useState } from "react";
+// Chat.js
+import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
-import "./Chat.css";
 
-const socket = io("http://localhost:5000", {
-  transports: ["websocket"],
-});
+const socket = io("http://localhost:5000"); // your server URL
 
-function Chat() {
-  const [message, setMessage] = useState("");
+const Chat = () => {
   const [messages, setMessages] = useState([]);
-
-  const sendMessage = () => {
-    if (!message.trim()) return;
-
-    socket.emit("send_message", { text: message });
-    setMessage("");
-  };
+  const [inputMessage, setInputMessage] = useState("");
 
   useEffect(() => {
-    socket.on("receive_message", (msg) => {
+    socket.on("message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
 
     return () => {
-      socket.off("receive_message");
+      socket.off("message");
     };
   }, []);
 
-  return (
-    <div className="chat-container">
-      <div className="chat-header">💬 Chat App</div>
+  const sendMessage = () => {
+    if (inputMessage.trim() === "") return;
+    socket.emit("message", inputMessage);
+    setMessages((prev) => [...prev, inputMessage]);
+    setInputMessage("");
+  };
 
-      <div className="chat-body">
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`chat-message ${
-              msg.senderId === socket.id ? "own-message" : "other-message"
-            }`}
-          >
-            {msg.text}
-            <small>{new Date(msg.createdAt).toLocaleTimeString()}</small>
-          </div>
+  return (
+    <div>
+      <h2>Chat App</h2>
+      <div data-testid="messages">
+        {messages.map((msg, index) => (
+          <div key={index}>{msg}</div>
         ))}
       </div>
-
-      <div className="chat-footer">
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message..."
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button onClick={sendMessage}>➤</button>
-      </div>
+      <input
+        data-testid="input-box"
+        placeholder="Type message..."
+        type="text"
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+      />
+      <button data-testid="send-btn" onClick={sendMessage}>
+        Send
+      </button>
     </div>
   );
-}
+};
 
 export default Chat;

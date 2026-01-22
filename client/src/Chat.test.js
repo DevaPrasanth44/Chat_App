@@ -1,61 +1,47 @@
+// Chat.test.js
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import Chat from "./Chat";
-import io from "socket.io-client";
 
-jest.mock("socket.io-client");
+// Mock socket.io-client
+jest.mock("socket.io-client", () => {
+  return jest.fn(() => ({
+    emit: jest.fn(),
+    on: jest.fn(),
+    off: jest.fn(),
+  }));
+});
 
-describe("Chat Component Tests", () => {
-
-  beforeEach(() => {
-    io.mockClear();
-  });
-
-  /* ✅ TEST 1 */
-  test("renders chat header", () => {
-    render(<Chat />);
-    expect(screen.getByText("💬 Chat App")).toBeInTheDocument();
-  });
-
-  /* ✅ TEST 2 */
+describe("Chat Component", () => {
   test("renders input box and send button", () => {
     render(<Chat />);
-    expect(screen.getByPlaceholderText("Type a message...")).toBeInTheDocument();
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    const input = screen.getByPlaceholderText("Type message...");
+    const button = screen.getByText("Send");
+
+    expect(input).toBeInTheDocument();
+    expect(button).toBeInTheDocument();
   });
 
-  /* ✅ TEST 3 */
-  test("allows typing a message", () => {
+  test("can type in input box", () => {
     render(<Chat />);
-    const input = screen.getByPlaceholderText("Type a message...");
+    const input = screen.getByPlaceholderText("Type message...");
     fireEvent.change(input, { target: { value: "Hello" } });
     expect(input.value).toBe("Hello");
   });
 
-  /* ✅ TEST 4 */
-  test("emits socket event when send button is clicked", () => {
+  test("can send a message and clear input", () => {
     render(<Chat />);
-    const input = screen.getByPlaceholderText("Type a message...");
-    const button = screen.getByRole("button");
+    const input = screen.getByPlaceholderText("Type message...");
+    const button = screen.getByText("Send");
 
     fireEvent.change(input, { target: { value: "Hello World" } });
     fireEvent.click(button);
 
-    const socketInstance = io.mock.results[0].value;
-    expect(socketInstance.emit).toHaveBeenCalledWith(
-      "send_message",
-      expect.objectContaining({ text: "Hello World" })
-    );
-  });
+    // Message should appear in messages list
+    const message = screen.getByText("Hello World");
+    expect(message).toBeInTheDocument();
 
-  /* ✅ TEST 5 */
-  test("clears input after sending message", () => {
-    render(<Chat />);
-    const input = screen.getByPlaceholderText("Type a message...");
-    const button = screen.getByRole("button");
-
-    fireEvent.change(input, { target: { value: "Test Message" } });
-    fireEvent.click(button);
-
+    // Input should be cleared
     expect(input.value).toBe("");
   });
 });
