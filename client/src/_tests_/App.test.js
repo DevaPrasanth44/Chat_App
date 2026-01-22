@@ -1,9 +1,7 @@
-import { render } from '@testing-library/react';
-import App from '../App';
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-jest.mock('../Chat', () => () => <div>Chat Component</div>);
-
-test('App renders Chat component', () => {
-  const { getByText } = render(<App />);
-  expect(getByText('Chat Component')).toBeInTheDocument();
+test("renders chat component", () => {
+  render(<App />);
+  expect(screen.getByText(/chat app/i)).toBeInTheDocument();
 });
