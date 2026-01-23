@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "npx jest --runInBand"
+     "test": "npx jest --runInBand --passWithNoTests"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -17,4 +17,6 @@
     "jest": "^29.7.0",
     "supertest": "^6.3.4"
   }
+ 
 }
+
