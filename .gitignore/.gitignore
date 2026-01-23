@@ -1,0 +1,13 @@
+# Node modules
+node_modules/
+
+# React / Babel / ESLint cache
+.cache/
+client/node_modules/.cache/
+
+# Build output
+build/
+dist/
+
+# Env files
+.env

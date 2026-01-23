@@ -15,33 +15,36 @@ jest.mock("socket.io-client", () => {
 describe("Chat Component", () => {
   test("renders input box and send button", () => {
     render(<Chat />);
+
     const input = screen.getByPlaceholderText("Type message...");
-    const button = screen.getByText("Send");
+    const button = screen.getByTestId("send-btn");
 
     expect(input).toBeInTheDocument();
     expect(button).toBeInTheDocument();
   });
 
-  test("can type in input box", () => {
+  test("allows typing in the input box", () => {
     render(<Chat />);
+
     const input = screen.getByPlaceholderText("Type message...");
     fireEvent.change(input, { target: { value: "Hello" } });
+
     expect(input.value).toBe("Hello");
   });
 
-  test("can send a message and clear input", () => {
+  test("sends a message and clears the input", () => {
     render(<Chat />);
+
     const input = screen.getByPlaceholderText("Type message...");
-    const button = screen.getByText("Send");
+    const button = screen.getByTestId("send-btn");
 
     fireEvent.change(input, { target: { value: "Hello World" } });
     fireEvent.click(button);
 
-    // Message should appear in messages list
-    const message = screen.getByText("Hello World");
-    expect(message).toBeInTheDocument();
+    // Message appears in chat body
+    expect(screen.getByText("Hello World")).toBeInTheDocument();
 
-    // Input should be cleared
+    // Input is cleared
     expect(input.value).toBe("");
   });
 });
