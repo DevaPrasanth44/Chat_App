@@ -121,13 +121,13 @@ pipeline {
             }
         }
 
-        stage('Run Backend Tests') {
-            steps {
-                dir('server') {
-                    bat 'npm test'
-                }
-            }
+       stage('Run Backend Tests') {
+    steps {
+        dir('server') {
+            bat 'npm test'
         }
+    }
+}
 
         stage('Install Frontend Dependencies') {
             steps {
@@ -139,13 +139,13 @@ pipeline {
             }
         }
 
-        stage('Run Frontend Tests') {
-            steps {
-                dir('client') {
-                    bat 'npm test -- --watchAll=false --runInBand'
-                }
-            }
+       stage('Run Frontend Tests') {
+    steps {
+        dir('client') {
+            bat 'npm test -- --watchAll=false --runInBand'
         }
+    }
+}
 
         stage('Build React App') {
             steps {
