@@ -1,7 +1,7 @@
 // Chat.test.js
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Chat from "./Chat";
+import Chat from "../Chat";
 
 // Mock socket.io-client
 jest.mock("socket.io-client", () => {
